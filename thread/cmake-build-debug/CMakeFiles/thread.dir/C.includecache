@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/mohamedessam/CLionProjects/thread/semaphores.c
+semaphores.h
+/home/mohamedessam/CLionProjects/thread/semaphores.h
+
+/home/mohamedessam/CLionProjects/thread/semaphores.h
+pthread.h
+-
+stdio.h
+-
+stdlib.h
+-
+/usr/include/semaphore.h
+-
+unistd.h
+-
+
+/usr/include/semaphore.h
+features.h
+-
+sys/types.h
+-
+bits/types/struct_timespec.h
+-
+bits/semaphore.h
+-
+

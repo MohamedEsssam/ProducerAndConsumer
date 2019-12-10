@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/thread.dir/main.c.o CMakeFiles/thread.dir/semaphores.c.o  -o thread -lpthread 
