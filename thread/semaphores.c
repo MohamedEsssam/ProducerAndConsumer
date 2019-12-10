@@ -7,9 +7,6 @@
 #define NoOfItemInMemory      5/* number of items produced/consumed */
 #define NoOfProducerAndConsumer          3 /*number of threads that will work on task*/
 
-
-
-
 Memory memory;
 
 void init(){
@@ -25,18 +22,11 @@ void init(){
 
 void *Producer(void *arg)
 {
-    int i, item, index;
-
-    index = (int)arg;
-
-
-    for (i=0; i < NoOfItemInMemory; i++)
+    int  item;
+    int index = (int)arg;
+    for (int i=0; i < NoOfItemInMemory; i++)
     {
-
-
         item = i;
-
-
         /* If there are no empty slots, wait */
         sem_wait(&memory.empty);
         /* If another thread uses the buffer, wait */
@@ -45,7 +35,8 @@ void *Producer(void *arg)
         memory.inBuffer = (memory.inBuffer+1)%bufferSize;
         printf("Producer Thread[%d] received message %d ...\n", index, item);
         sleep(1);
-        printf(" wait to receive message %d ...\n", item+1);
+        if (i !=NoOfItemInMemory-1){printf(" wait to receive message %d ...\n", item+1);sleep(1);}
+        if (i==NoOfItemInMemory-1)printf("memory is full\n");
         /* Release the buffer */
         pthread_mutex_unlock(&memory.mutex);
         /* Increment the number of full slots */
@@ -53,18 +44,17 @@ void *Producer(void *arg)
 
          sleep(1);
     }
+    return NULL;
 }
 
 
 void *Consumer(void *arg)
 {
-    int i, item, index;
-
-    index = (int)arg;
-    for (i=NoOfItemInMemory; i > 0; i--) {
+    int item ;
+    int index = (int)arg;
+    for (int i=NoOfItemInMemory; i > 0; i--) {
         sem_wait(&memory.full);
         pthread_mutex_lock(&memory.mutex);
-        item=i;
         item=memory.buffer[memory.outBuffer];
         memory.outBuffer = (memory.outBuffer+1)%bufferSize;
         printf("Consumer Thread[%d] removed message %d \n", index, item);
@@ -85,5 +75,9 @@ void run(){
     for (int index = 0; index < NoOfProducerAndConsumer; index++)pthread_create(&producerThread, NULL, Producer, (void*)index);
     /*create a new Consumer*/
     for(int index=0; index<NoOfProducerAndConsumer; index++)pthread_create(&ConsumerThread, NULL, Consumer, (void*)index);
+    //destroy mutex and semaphore .
+    pthread_mutex_destroy(&memory.mutex);
+    sem_destroy(&memory.empty);
+    sem_destroy(&memory.full);
     pthread_exit(NULL);
 }
